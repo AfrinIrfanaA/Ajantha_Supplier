@@ -12,11 +12,15 @@ import { ExpenseCategory } from "./models/ExpenseCategory.js";
 import { Settings } from "./models/Settings.js";
 
 const app = express();
-const allowedOrigins = env.clientOrigin.split(",").map((origin) => origin.trim());
+const normalizeOrigin = (origin: string) => origin.trim().replace(/\/+$/, "");
+const allowedOrigins = new Set([
+  "https://ajantha-supplier.vercel.app",
+  ...env.clientOrigin.split(",").map(normalizeOrigin),
+]);
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.has(normalizeOrigin(origin))) {
         callback(null, true);
         return;
       }
