@@ -13,12 +13,7 @@ Supplier management for a small shop: suppliers, purchases, payments, ledger, se
 
 1. Copy `.env.example` to `.env` in the project root.
 2. Set `MONGODB_URI` (MongoDB Atlas connection string) and `JWT_SECRET`.
-3. Optional owner credentials:
 
-```
-OWNER_EMAIL=owner@ajantha.local
-OWNER_PASSWORD=Owner@123
-```
 
 4. Install and run:
 
