@@ -105,6 +105,14 @@ export function PurchaseFormPage() {
 
         <div>
           <div className="mb-2 font-medium">{t("purchases.products")}</div>
+          <div className="mb-2 hidden grid-cols-6 gap-2 px-3 text-xs font-medium text-stone-500 sm:grid">
+            <span>{t("purchases.productName")}</span>
+            <span>{t("purchases.category")}</span>
+            <span>{t("purchases.quantity")}</span>
+            <span>{t("purchases.costRate")}</span>
+            <span>{t("purchases.discount")}</span>
+            <span>{t("purchases.itemTotal")}</span>
+          </div>
           <div className="space-y-3">
             {items.map((item, idx) => (
               <div key={idx} className="grid gap-2 rounded-lg border border-stone-200 p-3 dark:border-stone-800 sm:grid-cols-6">

@@ -15,11 +15,14 @@ const mobileRegex = /^[0-9]{10}$/;
 const supplierSchema = z.object({
   name: z.string().trim().min(1, "Supplier name is required."),
   businessName: z.string().trim().optional().default(""),
-  mobile: z.string().trim().regex(mobileRegex, "Enter exactly 10 digits for the Indian mobile number."),
+  mobile: z.string().trim().optional().default("").refine(
+    (mobile) => !mobile || mobileRegex.test(mobile),
+    "Enter exactly 10 digits for the Indian mobile number."
+  ),
   city: z.string().trim().optional().default(""),
   address: z.string().trim().optional().default(""),
   notes: z.string().trim().optional().default(""),
-  supplierType: z.enum(SUPPLIER_TYPES, { required_error: "Supplier type is required." }),
+  supplierType: z.enum(SUPPLIER_TYPES).optional().default("other"),
   categories: z.array(z.enum(PRODUCT_CATEGORIES)).optional().default([]),
   preferredPaymentMethod: z.string().optional().default("cash"),
   otherCategory: z.string().trim().optional().default(""),

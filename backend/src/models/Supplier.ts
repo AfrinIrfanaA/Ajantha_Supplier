@@ -50,11 +50,11 @@ const supplierSchema = new Schema<SupplierDoc>(
   {
     name: { type: String, required: true, trim: true },
     businessName: { type: String, default: "", trim: true },
-    mobile: { type: String, required: true, trim: true },
+    mobile: { type: String, default: "", trim: true },
     city: { type: String, default: "", trim: true },
     address: { type: String, default: "", trim: true },
     notes: { type: String, default: "", trim: true },
-    supplierType: { type: String, enum: SUPPLIER_TYPES, required: true },
+    supplierType: { type: String, enum: SUPPLIER_TYPES, default: "other" },
     categories: [{ type: String, enum: PRODUCT_CATEGORIES }],
     preferredPaymentMethod: { type: String, default: "cash" },
     otherCategory: { type: String, default: "", trim: true },
