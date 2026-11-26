@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ApiError, api } from "../api/client";
-import { Button, Card, FieldError, Input, Label, Select, Textarea } from "../components/ui";
+import { Button, Card, FieldError, Input, Label, Select } from "../components/ui";
 import { useToast } from "../context/ToastContext";
 import { formatMoney, todayIso } from "../lib/format";
 
@@ -20,8 +20,6 @@ export function PaymentFormPage() {
   const [paymentDate, setPaymentDate] = useState(todayIso());
   const [amount, setAmount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [referenceNumber, setReferenceNumber] = useState("");
-  const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -46,8 +44,6 @@ export function PaymentFormPage() {
           paymentDate,
           amount: Number(amount),
           paymentMethod,
-          referenceNumber,
-          notes,
         }),
       });
       toast.success(t("payments.created"));
@@ -100,14 +96,6 @@ export function PaymentFormPage() {
               </option>
             ))}
           </Select>
-        </div>
-        <div>
-          <Label>{t("payments.reference")}</Label>
-          <Input value={referenceNumber} onChange={(e) => setReferenceNumber(e.target.value)} />
-        </div>
-        <div>
-          <Label>{t("common.notes")}</Label>
-          <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
         </div>
         <FieldError>{error}</FieldError>
         <div className="flex gap-2">
