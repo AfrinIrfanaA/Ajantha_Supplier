@@ -179,6 +179,7 @@
     "subtotal": "Subtotal",
     "grandTotal": "Grand Total",
     "paidAmount": "Paid Amount",
+    "totalAmount": "Total Amount",
     "outstanding": "Outstanding Amount",
     "paymentMethod": "Payment Method",
     "notes": "Notes",

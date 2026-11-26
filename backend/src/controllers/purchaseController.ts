@@ -24,9 +24,10 @@ const itemSchema = z.object({
 
 const purchaseSchema = z.object({
   supplierId: z.string().min(1, "Every purchase must have a supplier."),
-  invoiceNumber: z.string().trim().min(1, "Invoice number is required."),
+  invoiceNumber: z.string().trim().optional().default(""),
   purchaseDate: z.string().min(1, "Purchase date is required."),
-  items: z.array(itemSchema).min(1, "Add at least one product."),
+  items: z.array(itemSchema).optional().default([]),
+  totalAmount: z.number().min(0).optional(),
   otherCharges: z.number().min(0).optional().default(0),
   paidAmount: z.number().min(0).optional().default(0),
   paymentMethod: z.string().optional().default(""),
@@ -179,7 +180,30 @@ export const createPurchase = asyncHandler(async (req, res) => {
   const supplier = await Supplier.findById(data.supplierId);
   if (!supplier) throw new AppError("Supplier not found.", 404);
 
-  const calc = calcPurchase(data.items, data.otherCharges, data.paidAmount);
+  if (data.items.length === 0 && data.totalAmount === undefined) {
+    throw new AppError("Total amount is required.", 400);
+  }
+  const calc =
+    data.items.length > 0
+      ? calcPurchase(data.items, data.otherCharges, data.paidAmount)
+      : {
+          items: [],
+          subtotal: roundMoney(data.totalAmount ?? 0),
+          discount: 0,
+          otherCharges: 0,
+          grandTotal: roundMoney(data.totalAmount ?? 0),
+          paidAmount: roundMoney(data.paidAmount),
+          outstandingAmount: roundMoney((data.totalAmount ?? 0) - data.paidAmount),
+          status: paymentStatus(
+            roundMoney((data.totalAmount ?? 0) - data.paidAmount),
+            roundMoney(data.paidAmount)
+          ),
+        };
+  if (calc.paidAmount - calc.grandTotal > 0.009) {
+    throw new AppError("Paid amount cannot exceed the grand total.", 400, "PAID_EXCEEDS_TOTAL");
+  }
+  const invoiceNumber =
+    data.invoiceNumber || `PUR-${new mongoose.Types.ObjectId().toHexString().toUpperCase()}`;
   if (calc.paidAmount > 0) {
     if (!data.paymentMethod) throw new AppError("Payment method is required when an amount is paid.", 400);
     const method = await PaymentMethod.findOne({ key: data.paymentMethod, enabled: true });
@@ -189,7 +213,7 @@ export const createPurchase = asyncHandler(async (req, res) => {
   const purchase = await withOptionalTransaction(async (session) => {
     const created = await insertOne(Purchase, {
       supplierId: supplier._id,
-      invoiceNumber: data.invoiceNumber,
+      invoiceNumber,
       purchaseDate: new Date(data.purchaseDate),
       items: calc.items,
       subtotal: calc.subtotal,

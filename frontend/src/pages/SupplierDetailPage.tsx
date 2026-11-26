@@ -337,26 +337,28 @@ export function SupplierDetailPage() {
             <div>
               {t("common.date")}: {formatDate(viewPurchase.purchaseDate)}
             </div>
-            <table className="w-full text-left">
-              <thead>
-                <tr>
-                  <th>{t("purchases.productName")}</th>
-                  <th>{t("purchases.quantity")}</th>
-                  <th>{t("purchases.rate")}</th>
-                  <th>{t("purchases.itemTotal")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {viewPurchase.items.map((item, i) => (
-                  <tr key={i}>
-                    <td>{item.productName}</td>
-                    <td>{item.quantity}</td>
-                    <td>{formatMoney(item.rate)}</td>
-                    <td>{formatMoney(item.total)}</td>
+            {viewPurchase.items.length > 0 && (
+              <table className="w-full text-left">
+                <thead>
+                  <tr>
+                    <th>{t("purchases.productName")}</th>
+                    <th>{t("purchases.quantity")}</th>
+                    <th>{t("purchases.rate")}</th>
+                    <th>{t("purchases.itemTotal")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {viewPurchase.items.map((item, i) => (
+                    <tr key={i}>
+                      <td>{item.productName}</td>
+                      <td>{item.quantity}</td>
+                      <td>{formatMoney(item.rate)}</td>
+                      <td>{formatMoney(item.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
             <div>
               {t("purchases.grandTotal")}: {formatMoney(viewPurchase.grandTotal)}
             </div>
